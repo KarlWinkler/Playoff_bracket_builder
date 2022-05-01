@@ -1,7 +1,7 @@
 # Playoff_bracket_builder
 
-| requirements | version |
-| --------- |:---|:---------|:-----|
+|requirements|version|
+| --------- |:---|
 | ruby | 2.7.0p0 |
 
 |Column1|Column1|Column1|

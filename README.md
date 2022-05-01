@@ -1,6 +1,6 @@
 # Playoff_bracket_builder
 
-|requirements|version|
+|Requirements|version|
 | --------- |:---|
 | ruby | 2.7.0p0 |
 
@@ -8,7 +8,12 @@
 
 ```$ ruby NHL_Playoff_Bracket.rb```
 
-## available commands
+## Using the Program
+
+Entering the program you will be prompted for an input
+
+regulairly printing the current bracket is a good idea to keep track of the changes 
+you are making
 
 slots start from top left and go top to bottom, then by round
 

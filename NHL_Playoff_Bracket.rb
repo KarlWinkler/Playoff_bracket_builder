@@ -34,19 +34,31 @@ end
 reader.close
 
 # help message for the first round menu (I will make one that should encompase the other menues seperate)
-$helpMessageRoundOne = <<EOM
+$helpMessageModeOne = <<EOM
 Help Menu
 ============================================================
-slots start from top left and go top to bottom, left to right
+slots start from top left and go top to bottom, then by round
 
 entering a team name that is not the same as a following command will insert it into the 
 current index and increment to the next slot automatically
+
+h -> displays this menu
 
 m -> move to an index in the first round 1-16 (overflow will circle around)
 
 r -> replace team at the current index
 
 i -> insert team at an index 
+
+mm -> move to a matchup (overflow will circle around)
+
+1 -> select top team as the winner in the currently selected match
+
+2 -> select bottom team as the winner in the currently selected match 
+
+i1 -> select top team as the winner in the indexed match
+
+i2 -> select bottom team as the winner in the indexed match
 
 p -> prints the current bracket
 
@@ -63,65 +75,85 @@ reset -> resets the braket so everything is empty
 EOM
 
 # simple global state tracking variables
-$round = 1
-$index = 1
+$mode = 1 #tracks the editing mode
+$index = 1 #tracks current index
+$match = 1
 
 #app loop
 def main
   loop do
-    if $round == 1
-      puts "\nset up the starting 16 playoff bound teams and the matchups"
-      puts "current index = #{$index}"
-      puts "current round = #{$round}"
-      print "enter h to view the help menu: "
-      input = gets.to_s.chomp.downcase
-      
-      case input
-      when "m"
-        inx = getInx(16)
-        if inx != -1
-          $index = inx
-        end
-      when "r"
-        team = getTeamName
-        if team != -1
-          $bracket.addTeamAt(team, $index - 1)
-        end
-      when "i"
-        team = getTeamName
-        inx = getInx(16)
-        if team != -1 || inx != -1
-          puts "#{inx}"
-          $bracket.addTeamAt(team, inx - 1)
-        end
-      when "nr"
-        $round += 1
-      when "p"
-        $bracket.print
-      when "pf"
-        print "file name: "
-        file = gets.to_s.chomp
-        $bracket.printf(file)
-      when "h"
-        puts $helpMessageRoundOne 
-      when "exit"
-        $bracket.save
-        exit
-      when "reset"
-        #reset bracket by making a new one (should probably be a method in the bracket class)
-        $bracket = Bracket.new([])
-      else
-        team = tryTeamName(input)
-        if team != -1
-          $bracket.addTeamAt(team, $index - 1)
-          $index += 1
-          puts "inserted #{team}"
-        else
-          puts "not a team"
-        end      
+    puts "\nset up the starting 16 playoff bound teams and the matchups"
+    puts "current index = #{$index}"
+    puts "current match = #{$match}"
+    print "enter h to view the help menu: "
+    input = gets.to_s.chomp.downcase
+    
+    case input
+    when "m"
+      inx = getInx(16)
+      if inx != -1 #did getInx return valid
+        $index = inx
       end
+    when "mm"
+      inx = getInx(15)
+      if inx != -1 
+        $match = inx
+      end
+    when "r"
+      team = getTeamName
+      if team != -1
+        $bracket.addTeamAt(team, $index - 1)
+      end
+    when "i"
+      team = getTeamName
+      inx = getInx(16)
+      if team != -1 || inx != -1
+        puts "#{inx}"
+        $bracket.addTeamAt(team, inx - 1)
+      end
+    when "1"
+      $bracket.setWinner($match - 1, 0)
+      $match += 1
+    when "2"
+      $bracket.setWinner($match - 1, 1)
+      $match += 1
+    when "i1"
+      inx = getInx(15)
+      if inx != -1
+        $bracket.setWinner(inx - 1, 0)
+      end
+    when "i2"
+      inx = getInx(15)
+      if inx != -1
+        $bracket.setWinner(inx - 1, 1)
+      end
+    when "p"
+      $bracket.print
+    when "pf"
+      print "file name: "
+      file = gets.to_s.chomp
+      $bracket.printf(file)
+    when "h"
+      puts $helpMessageModeOne 
+    when "s"
+      $bracket.save
+    when "next"
+      $mode += 1
+    when "exit"
+      $bracket.save
+      exit
+    when "reset"
+      #reset bracket by making a new one (should probably be a method in the bracket class)
+      $bracket = Bracket.new([])
     else
-      
+      team = tryTeamName(input)
+      if team != -1
+        $bracket.addTeamAt(team, $index - 1)
+        $index += 1
+        puts "inserted #{team}"
+      else
+        puts "not a team"
+      end      
     end
   end
 end

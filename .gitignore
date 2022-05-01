@@ -26,5 +26,3 @@ tmp
 *.test
 test.*
 *.bracket
-*.swo
-*.swp

@@ -10,15 +10,11 @@
 
 ## Using the Program
 
-Entering the program you will be prompted for an input
+When starting the program you will be prompted for an input.
 
-regulairly printing the current bracket is a good idea to keep track of the changes 
-you are making
+entering a team name that is not the same as a following command will insert it into the current index and increment to the next slot automatically. Slots start from top left and go top to bottom, then by round
 
-slots start from top left and go top to bottom, then by round
-
-entering a team name that is not the same as a following command will insert it into the 
-current index and increment to the next slot automatically
+Input Options
 
 h -> displays this menu
 
@@ -49,3 +45,7 @@ s -> saves the current bracket
 exit -> saves the current bracket and closes the program 
 
 reset -> resets the braket so everything is empty
+
+## Screenshots
+
+todo

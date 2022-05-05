@@ -1,6 +1,6 @@
-require_relative "bracket"
+require_relative "Interfaces/updaterInterface"
 
-class BracketUpdater
+class BracketUpdater < UpdaterInterface
 
 	def initialize(bracketInterface)
 		@bracket = bracketInterface

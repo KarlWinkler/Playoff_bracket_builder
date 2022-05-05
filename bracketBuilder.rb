@@ -1,4 +1,6 @@
-class BracketBuilder 
+require_relative "Interfaces/builderInterface"
+
+class BracketBuilder < BuilderInterface
   def initialize(fileName)
     @fileName = fileName #default: "nhl.bracket"
   end

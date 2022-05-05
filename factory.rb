@@ -1,3 +1,11 @@
+require_relative "Interfaces/bracketInterface"
+require_relative "Interfaces/teamsInterface"
+require_relative "Interfaces/builderInterface"
+require_relative "Interfaces/saveInterface"
+require_relative "Interfaces/updaterInterface"
+require_relative "Interfaces/printerInterface"
+require_relative "Interfaces/validatorInterface"
+
 require_relative "bracket"
 require_relative "teams"
 require_relative "teamsBuilder"
@@ -13,35 +21,35 @@ require_relative "teamsValidator"
 class Factory
 
   def self.createBracket(builder)
-    return Bracket.new(builder)
+    return BracketInterface.new(Bracket.new(builder))
   end  
 
   def self.createBracketBuilder(fileName)
-    return BracketBuilder.new(fileName)
+    return BuilderInterface.new(BracketBuilder.new(fileName))
   end
 
   def self.createBracketSaver(bracket)
-    return BracketSaver.new(bracket)
+    return SaveInterface.new(BracketSaver.new(bracket))
   end
 
   def self.createBracketPrinter(bracket)
-    return BracketPrinter.new(bracket)
+    return PrinterInterface.new(BracketPrinter.new(bracket))
   end
 
   def self.createBracketUpdater(bracket)
-    return BracketUpdater.new(bracket)
+    return UpdaterInterface.new(BracketUpdater.new(bracket))
   end
 
   def self.createTeams(builder)
-    return Teams.new(builder)
+    return TeamsInterface.new(Teams.new(builder))
   end
 
   def self.createTeamsBuilder(fileName)
-    return TeamsBuilder.new(fileName)
+    return BuilderInterface.new(TeamsBuilder.new(fileName))
   end
 
   def self.createTeamsValidator(teams)
-    return TeamsValidator.new(teams)
+    return ValidatorInterface.new(TeamsValidator.new(teams))
   end
 
 end

@@ -1,4 +1,6 @@
-class BracketPrinter
+require_relative "Interfaces/printerInterface"
+
+class BracketPrinter < PrinterInterface
  
 	def initialize(bracketInterface)
     @teams = bracketInterface.getTeams

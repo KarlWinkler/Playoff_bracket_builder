@@ -1,8 +1,10 @@
-class BracketSaver
+require_relative "Interfaces/saveInterface"
 
-  def initialize(bracketInterface)
-    @winner = bracketInterface.getWinners
-    @teams = bracketInterface.getTeams
+class BracketSaver < SaveInterface
+
+  def initialize(bracket)
+    @winner = bracket.getWinners
+    @teams = bracket.getTeams
   end
   
   #saves the bracket as a template to a file

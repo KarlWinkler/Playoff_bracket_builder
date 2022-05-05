@@ -88,7 +88,7 @@ def main
     when "i"
       team = getTeamName
       if team != -1
-        inx = getInx(numOfFirstRoundTeams)
+        inx = getInx($numOfFirstRoundTeams)
         if inx != -1
           $bracketUpdater.addTeamAt(inx - 1, team)
         end
@@ -100,12 +100,12 @@ def main
       $bracketUpdater.setWinner($match - 1, 1)
       $match += 1
     when "i1"
-      inx = getInx(numOfMatchups)
+      inx = getInx($numOfMatchups)
       if inx != -1
         $bracketUpdater.setWinner(inx - 1, 0)
       end
     when "i2"
-      inx = getInx(numOfMatchups)
+      inx = getInx($numOfMatchups)
       if inx != -1
         $bracketUpdater.setWinner(inx - 1, 1)
       end

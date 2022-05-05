@@ -1,39 +1,7 @@
 require_relative "a_team"
-require_relative "bracket"
+require_relative "factory"
 
-#to make editing in the future eaiser
-if File.exist?("nhl.bracket")  
-  fromFile = []
-  reader = File.open("nhl.bracket") do |teamsList|
-    teamsList.each do |team|
-      fromFile.push(team.to_s.chomp)
-    end
-  end 
-
-  $bracket = Bracket.new(fromFile)
-
-else
-
-  $bracket = Bracket.new([])
-
-end
-
-#make sure the teams file exists
-if !File.exist?("teams")
-  puts "please make a test file of all teams currently in the NHL \nthis list is used to check if the input matches a valid team in the league"
-  exit
-end
-
-#build the resources from the teams file
-$teamsList = []
-reader = File.open("teams") do |team|
-  team.each do |names|
-    $teamsList.push(A_team.new(names.split(", ")))
-  end
-end
-reader.close
-
-# help message for the first round menu (I will make one that should encompase the other menues seperate)
+# help message
 $helpMessageModeOne = <<EOM
 Help Menu
 ============================================================
@@ -74,13 +42,26 @@ reset -> resets the braket so everything is empty
 =============================================================
 EOM
 
+$teamsConfFile = "teams"
+$bracketSaveName = "nhl.bracket"
+$numOfFirstRoundTeams = 16
+$numOfMatchups = 15
+
 # simple global state tracking variables
-$mode = 1 #tracks the editing mode
+$mode = 1 #tracks the editing mode # depricated (I think)
 $index = 1 #tracks current index
 $match = 1
 
-#app loop
 def main
+
+  $teams = Factory.createTeams(Factory.createTeamsBuilder($teamsConfFile))
+  $bracket = Factory.createBracket(Factory.createBracketBuilder($bracketSaveName))
+  $bracketUpdater = Factory.createBracketUpdater($bracket)
+  $bracketPrinter = Factory.createBracketPrinter($bracket)
+  $bracketSaver = Factory.createBracketSaver($bracket)
+  $validator = Factory.createTeamsValidator($teams)
+
+  #app loop
   loop do
     puts "\nset up the starting 16 playoff bound teams and the matchups"
     puts "current index = #{$index}"
@@ -90,65 +71,66 @@ def main
     
     case input
     when "m"
-      inx = getInx(16)
+      inx = getInx($numOfFirstRoundTeams)
       if inx != -1 #did getInx return valid
         $index = inx
       end
     when "mm"
-      inx = getInx(15)
+      inx = getInx($numOfMatchups)
       if inx != -1 
         $match = inx
       end
     when "r"
       team = getTeamName
       if team != -1
-        $bracket.addTeamAt(team, $index - 1)
+        $bracketUpdater.addTeamAt($index - 1, team)
       end
     when "i"
       team = getTeamName
-      inx = getInx(16)
-      if team != -1 || inx != -1
-        puts "#{inx}"
-        $bracket.addTeamAt(team, inx - 1)
+      if team != -1
+        inx = getInx(numOfFirstRoundTeams)
+        if inx != -1
+          $bracketUpdater.addTeamAt(inx - 1, team)
+        end
       end
     when "1"
-      $bracket.setWinner($match - 1, 0)
+      $bracketUpdater.setWinner($match - 1, 0)
       $match += 1
     when "2"
-      $bracket.setWinner($match - 1, 1)
+      $bracketUpdater.setWinner($match - 1, 1)
       $match += 1
     when "i1"
-      inx = getInx(15)
+      inx = getInx(numOfMatchups)
       if inx != -1
-        $bracket.setWinner(inx - 1, 0)
+        $bracketUpdater.setWinner(inx - 1, 0)
       end
     when "i2"
-      inx = getInx(15)
+      inx = getInx(numOfMatchups)
       if inx != -1
-        $bracket.setWinner(inx - 1, 1)
+        $bracketUpdater.setWinner(inx - 1, 1)
       end
     when "p"
-      $bracket.print
+      $bracketPrinter.print
     when "pf"
       print "file name: "
       file = gets.to_s.chomp
-      $bracket.printf(file)
+      $bracketPrinter.printf(file)
     when "h"
       puts $helpMessageModeOne 
     when "s"
-      $bracket.save
+      $bracketSaver.save($bracketSaveName)
     when "next"
       $mode += 1
     when "exit"
-      $bracket.save
+      $bracketSaver.save($bracketSaveName)
       exit
     when "reset"
       #reset bracket by making a new one (should probably be a method in the bracket class)
-      $bracket = Bracket.new([])
+      $bracketUpdater = Bracket.new([])
     else
       team = tryTeamName(input)
       if team != -1
-        $bracket.addTeamAt(team, $index - 1)
+        $bracketUpdater.addTeamAt($index - 1, team)
         $index += 1
         puts "inserted #{team}"
       else
@@ -158,34 +140,34 @@ def main
   end
 end
 
-#prompts for and gets the team name from the user 
-#returns the name from the team object or -1 if the function
-#is cancelled
+# prompts for and gets the team name from the user 
+# returns the name from the team object or -1 if the function
+# is cancelled
 def getTeamName
+  # try until the user quits or enters a valid name
   loop do
     print "team name or exit to cancel: "
     teamIn = gets.to_s.downcase.chomp
-    #generous with what you can quit with (I hate when it is strict)
+
+    # different ways to quit
     if teamIn == "exit" || teamIn == "cancel" || teamIn == "quit"
-      return -1
+      break
     end
-    $teamsList.each do |team|
-      if team.match(teamIn)
-        return team.name
-      end
+    team = tryTeamName(teamIn)
+    if team != -1
+      return team
     end
   end
   return -1
 end
 
-#same as getTeamName but for the index
-#only thing is for the max int that is allowed for the user so that some users 
-#who want to be special are accounted for
+# same as getTeamName but for the index
+# max int makes the input loop over itself so that the index never
+# goes out of bounds
 def getInx(max)
   loop do
     print "index or -1 to cancel: "
     inx = gets.to_s.chomp.downcase
-    #in case user wants to it wont be to strange
     if inx == "exit" || inx == "cancel" || inx == "quit"
       return -1
     end
@@ -201,14 +183,8 @@ def getInx(max)
   end
 end
 
-#more lenient test for a team name (only tries once)
 def tryTeamName(name)
-  $teamsList.each do |team|
-    if team.match(name)
-      return team.name
-    end
-  end
-  return -1
+  return $validator.validate(name)
 end
 
 #because I have to have functions declaired before they are called

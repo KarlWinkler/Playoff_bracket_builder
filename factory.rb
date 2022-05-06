@@ -5,6 +5,8 @@ require_relative "Interfaces/saveInterface"
 require_relative "Interfaces/updaterInterface"
 require_relative "Interfaces/printerInterface"
 require_relative "Interfaces/validatorInterface"
+require_relative "Interfaces/eventHandlerInterface"
+require_relative "Interfaces/UIInterface"
 
 require_relative "bracket"
 require_relative "teams"
@@ -14,6 +16,8 @@ require_relative "bracketBuilder"
 require_relative "bracketUpdater"
 require_relative "bracketPrinter"
 require_relative "teamsValidator"
+require_relative "inputEventHandler"
+require_relative "UI"
 
 # responsable for creating all of the objects
 # so they can be swaped out later
@@ -50,6 +54,14 @@ class Factory
 
   def self.createTeamsValidator(teams)
     return ValidatorInterface.new(TeamsValidator.new(teams))
+  end
+
+  def self.createEventHandler(standardMessages, updater, saver, printer, validator, bracket)
+    return EventHandlerInterface.new(InputEventHandler.new(standardMessages, updater, saver, printer, validator, bracket))
+  end
+
+  def self.createUI(eventHandler)
+    return UIInterface.new(UI.new(eventHandler))
   end
 
 end

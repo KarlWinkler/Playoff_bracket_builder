@@ -6,6 +6,8 @@ class Bracket < BracketInterface
   # takes a bracket template built by the 
   # bracket builder object and turns it into a bracket object
   def initialize(builderInterface)
+    @numOfFirstRoundTeams = 16
+    @numOfMatchups = 15
 
     @teams = []
     @winner = []
@@ -17,18 +19,18 @@ class Bracket < BracketInterface
   def templateToBracket(bracketTemplate)
     i = 0;
     bracketTemplate.each do |team|
-      if i < 16
+      if i < @numOfFirstRoundTeams
         @teams[i] = team
       else
-        @winner[i - 16] = team.to_i
+        @winner[i - @numOfFirstRoundTeams] = team.to_i
       end
       i += 1
     end
-    while i < 32
-      if i < 16
+    while i < @numOfFirstRoundTeams  * 2
+      if i < @numOfFirstRoundTeams
         @teams[i] ="___"
       else
-        @winner[i - 16] = -1
+        @winner[i - @numOfFirstRoundTeams] = -1
       end
       i += 1
     end
@@ -56,5 +58,13 @@ class Bracket < BracketInterface
 
   def getWinners
     return @winner
+  end
+
+  def getNumMatchups
+    return @numOfMatchups
+  end
+
+  def getNumFirstRoundTeams
+    return @numOfFirstRoundTeams
   end
 end

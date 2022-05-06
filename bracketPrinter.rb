@@ -27,7 +27,7 @@ class BracketPrinter < PrinterInterface
     #{getColour(7)}#{@teams[7]}#{r}                           #{getColour(15)}#{@teams[15]}#{r}
 EOM
 
-  puts bracket
+  return bracket
   end
 
   def printf(file)

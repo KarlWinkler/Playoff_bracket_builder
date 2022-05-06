@@ -1,7 +1,5 @@
-require_relative "Interfaces/builderInterface"
-
 #builds the teams list from the input file
-class TeamsBuilder < BuilderInterface
+class TeamsBuilder
 
   def initialize(fileName)
     @fileName = fileName #default: "teams"

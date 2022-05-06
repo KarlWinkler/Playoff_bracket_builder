@@ -1,7 +1,5 @@
-require_relative "Interfaces/bracketInterface"
-
 # holds a bracket string that can be saved to a file
-class Bracket < BracketInterface
+class Bracket
 
   # takes a bracket template built by the 
   # bracket builder object and turns it into a bracket object

@@ -1,6 +1,4 @@
-require_relative "Interfaces/saveInterface"
-
-class BracketSaver < SaveInterface
+class BracketSaver
 
   def initialize(bracket)
     @winner = bracket.getWinners

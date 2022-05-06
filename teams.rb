@@ -1,8 +1,6 @@
-require_relative "Interfaces/teamsInterface"
-
 # Teams object that holds the teams list
 # used to handle team name checks
-class Teams < TeamsInterface
+class Teams
 
   def initialize(builder)
     @teamsList = builder.build

@@ -1,6 +1,6 @@
-require_relative "Interfaces/UIInterface"
+require_relative "event"
 
-class UI < UIInterface
+class UI
   def initialize(eventHandler)
     @eventHandler = eventHandler
     @index = 1
@@ -14,7 +14,10 @@ class UI < UIInterface
       puts "current match = #{@match}"
       print "enter h to view the help menu: "
       input = gets.to_s.chomp.downcase
-      puts @eventHandler.getResponse(input, @index, @match)     
+      response = @eventHandler.getResponse(Event.new(input, @index, @match))
+      @index = response.getIndex
+      @match = response.getMatch
+      puts response.getMessage     
     end
   end
 end

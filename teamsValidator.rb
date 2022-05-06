@@ -1,6 +1,4 @@
-require_relative "Interfaces/validatorInterface"
-
-class TeamsValidator < ValidatorInterface
+class TeamsValidator
 
   def initialize(teams)
     @teamsList = teams.getTeamsList

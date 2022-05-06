@@ -1,13 +1,3 @@
-require_relative "Interfaces/bracketInterface"
-require_relative "Interfaces/teamsInterface"
-require_relative "Interfaces/builderInterface"
-require_relative "Interfaces/saveInterface"
-require_relative "Interfaces/updaterInterface"
-require_relative "Interfaces/printerInterface"
-require_relative "Interfaces/validatorInterface"
-require_relative "Interfaces/eventHandlerInterface"
-require_relative "Interfaces/UIInterface"
-
 require_relative "bracket"
 require_relative "teams"
 require_relative "teamsBuilder"
@@ -25,43 +15,43 @@ require_relative "UI"
 class Factory
 
   def self.createBracket(builder)
-    return BracketInterface.new(Bracket.new(builder))
+    return Bracket.new(builder)
   end  
 
   def self.createBracketBuilder(fileName)
-    return BuilderInterface.new(BracketBuilder.new(fileName))
+    return BracketBuilder.new(fileName)
   end
 
   def self.createBracketSaver(bracket)
-    return SaveInterface.new(BracketSaver.new(bracket))
+    return BracketSaver.new(bracket)
   end
 
   def self.createBracketPrinter(bracket)
-    return PrinterInterface.new(BracketPrinter.new(bracket))
+    return BracketPrinter.new(bracket)
   end
 
   def self.createBracketUpdater(bracket)
-    return UpdaterInterface.new(BracketUpdater.new(bracket))
+    return BracketUpdater.new(bracket)
   end
 
   def self.createTeams(builder)
-    return TeamsInterface.new(Teams.new(builder))
+    return Teams.new(builder)
   end
 
   def self.createTeamsBuilder(fileName)
-    return BuilderInterface.new(TeamsBuilder.new(fileName))
+    return TeamsBuilder.new(fileName)
   end
 
   def self.createTeamsValidator(teams)
-    return ValidatorInterface.new(TeamsValidator.new(teams))
+    return TeamsValidator.new(teams)
   end
 
   def self.createEventHandler(standardMessages, updater, saver, printer, validator, bracket)
-    return EventHandlerInterface.new(InputEventHandler.new(standardMessages, updater, saver, printer, validator, bracket))
+    return InputEventHandler.new(standardMessages, updater, saver, printer, validator, bracket)
   end
 
   def self.createUI(eventHandler)
-    return UIInterface.new(UI.new(eventHandler))
+    return UI.new(eventHandler)
   end
 
 end

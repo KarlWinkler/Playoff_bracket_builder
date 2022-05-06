@@ -1,6 +1,6 @@
-require_relative "Interfaces/eventHandlerInterface"
+require_relative "event"
 
-class InputEventHandler < EventHandlerInterface
+class InputEventHandler
 
   def initialize(standardMessages, updater, saver, printer, validator, bracket)
     @standardMessages = standardMessages
@@ -12,26 +12,31 @@ class InputEventHandler < EventHandlerInterface
     @bracketSaveName = "nhl.bracket"
   end
 
-  def getResponse(input, index, match)
+  def getResponse(eventIn)
+
+    input = eventIn.getMessage
+    index = eventIn.getIndex
+    match = eventIn.getMatch
+
     case input
 
     when "m"
       inx = getInx(@bracket.getNumFirstRoundTeams)
       if inx != -1 #did getInx return valid
         index = inx
-        return "moved to index #{inx}"
+        return Event.new("moved to index #{inx}", index, match)
       end
     when "mm"
       inx = getInx(@bracket.getNumMatchups)
       if inx != -1 
         match = inx
-        return "moved to match #{inx}"
+        return Event.new("moved to match #{inx}", index, match)
       end
     when "r"
       team = getTeamName
       if team != -1
         @updater.addTeamAt(index - 1, team)
-        return "#{team} set at index #{index}"
+        return Event.new("#{team} set at index #{index}", index, match)
       end
     when "i"
       team = getTeamName
@@ -39,56 +44,57 @@ class InputEventHandler < EventHandlerInterface
         inx = getInx(@bracket.getNumOfFirstRoundTeams)
         if inx != -1
           @updater.addTeamAt(inx - 1, team)
-          return "#{team} set at index #{inx}"
+          return Event.new("#{team} set at index #{inx}", index, match)
         end
       end
     when "1"
       @updater.setWinner(match - 1, 0)
       match += 1
-      return "winner set to 1"
+      return Event.new("winner set to 1", index, match)
     when "2"
       @updater.setWinner(match - 1, 1)
       match += 1
-      return "winner set to 2"
+      return Event.new("winner set to 2", index, match)
     when "i1"
       inx = getInx(@bracket.getNumMatchups)
       if inx != -1
         @updater.setWinner(inx - 1, 0)
-        return "winner of matchup #{inx} set to 1"
+        return Event.new("winner of matchup #{inx} set to 1", index, match)
       end
     when "i2"
       inx = getInx(@bracket.getNumMatchups)
       if inx != -1
         @updater.setWinner(inx - 1, 1)
-        return "winner of matchup #{inx} set to 2"
+        return Event.new("winner of matchup #{inx} set to 2", index, match)
       end
     when "p"
-      return @printer.print
+      return Event.new(@printer.print, index, match)
     when "pf"
       print "file name: "
       file = gets.to_s.chomp
       @printer.printf(file)
-      return "printed to file: #{file}"
+      return Event.new("printed to file: #{file}", index, match)
     when "h"
-      return @standardMessages.helpMessage 
+      return Event.new(@standardMessages.helpMessage, index, match) 
     when "s"
       @saver.save(@bracketSaveName)
-      return "saved"
+      return Event.new("saved", index, match)
     when "exit"
       @saver.save(@bracketSaveName)
-      
+      @standardMessages.exitMessage
       exit
     when "reset"
       #reset bracket by making a new one (should probably be a method in the bracket class)
       @updater = Bracket.new([])
+      return Event.new("bracket reset", 1, 1)
     else
       team = tryTeamName(input)
       if team != -1
         @updater.addTeamAt(index - 1, team)
         index += 1
-        return "inserted #{team}"
+        return Event.new("inserted #{team}", index, match)
       else
-        return "not a team"
+        return Event.new("not a team", index, match)
       end
     end
     return 1

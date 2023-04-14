@@ -1,13 +1,14 @@
 require_relative "bracket"
 require_relative "teams"
 require_relative "teamsBuilder"
-require_relative "bracketSaver"
 require_relative "bracketBuilder"
-require_relative "bracketUpdater"
-require_relative "bracketPrinter"
 require_relative "teamsValidator"
 require_relative "inputEventHandler"
 require_relative "UI"
+
+require_relative 'bracket_saver'
+require_relative 'bracket_printer'
+require_relative 'bracket_updater'
 
 # responsable for creating all of the objects
 # so they can be swaped out later
@@ -15,43 +16,30 @@ require_relative "UI"
 class Factory
 
   def self.createBracket(builder)
-    return Bracket.new(builder)
-  end  
-
-  def self.createBracketBuilder(fileName)
-    return BracketBuilder.new(fileName)
+    Bracket.new(builder)
   end
 
-  def self.createBracketSaver(bracket)
-    return BracketSaver.new(bracket)
-  end
-
-  def self.createBracketPrinter(bracket)
-    return BracketPrinter.new(bracket)
-  end
-
-  def self.createBracketUpdater(bracket)
-    return BracketUpdater.new(bracket)
+  def self.createBracketBuilder(file_name:)
+    BracketBuilder.new(file_name: file_name)
   end
 
   def self.createTeams(builder)
-    return Teams.new(builder)
+    Teams.new(builder)
   end
 
   def self.createTeamsBuilder(fileName)
-    return TeamsBuilder.new(fileName)
+    TeamsBuilder.new(fileName)
   end
 
   def self.createTeamsValidator(teams)
-    return TeamsValidator.new(teams)
+    TeamsValidator.new(teams)
   end
 
-  def self.createEventHandler(standardMessages, updater, saver, printer, validator, bracket)
-    return InputEventHandler.new(standardMessages, updater, saver, printer, validator, bracket)
+  def self.createEventHandler(standardMessages, validator, bracket)
+    InputEventHandler.new(standardMessages, validator, bracket)
   end
 
   def self.createUI(eventHandler)
-    return UI.new(eventHandler)
+    UI.new(eventHandler)
   end
-
 end

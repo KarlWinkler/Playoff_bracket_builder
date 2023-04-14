@@ -1,68 +1,61 @@
-# holds a bracket string that can be saved to a file
-class Bracket
+require_relative 'bracket_saver'
+require_relative 'bracket_printer'
+require_relative 'bracket_updater'
 
-  # takes a bracket template built by the 
+class Bracket
+  include BracketSaver
+  include BracketPrinter
+  include BracketUpdater
+
+  # takes a bracket template built by the
   # bracket builder object and turns it into a bracket object
-  def initialize(builderInterface)
-    @numOfFirstRoundTeams = 16
-    @numOfMatchups = 15
+  def initialize(builder_interface)
+    @num_of_first_round_teams = 16
+    @num_of_matchups = 15
 
     @teams = []
-    @winner = []
+    @winners = []
 
-    templateToBracket(builderInterface.build)
+    template_to_bracket(builder_interface.build)
   end
 
-  # 
-  def templateToBracket(bracketTemplate)
-    i = 0;
-    bracketTemplate.each do |team|
-      if i < @numOfFirstRoundTeams
-        @teams[i] = team
+  def template_to_bracket(bracket_template)
+    process_template(bracket_template)
+    i = bracket_template.length
+
+    while i < @num_of_first_round_teams * 2
+      if i < @num_of_first_round_teams
+        @teams[i] = '___'
       else
-        @winner[i - @numOfFirstRoundTeams] = team.to_i
-      end
-      i += 1
-    end
-    while i < @numOfFirstRoundTeams  * 2
-      if i < @numOfFirstRoundTeams
-        @teams[i] ="___"
-      else
-        @winner[i - @numOfFirstRoundTeams] = -1
+        @winners[i - @num_of_first_round_teams] = -1
       end
       i += 1
     end
   end
 
-  def setTeams(teams)
-    @teams = teams
+  def process_template(bracket_template)
+    bracket_template.each_with_index do |team, index|
+      if index < @num_of_first_round_teams
+        @teams[index] = team
+      else
+        @winners[index - @num_of_first_round_teams] = team.to_i
+      end
+    end
   end
 
-  def setTeamAt(inx, value)
+  attr_accessor :teams, :winners, :num_of_matchups, :num_of_first_round_teams
+
+  def set_team_at(inx, value)
     @teams[inx] = value.to_s
   end
 
-  def setWinnerAt(inx, value)
-    @winner[inx] = value.to_i
+  def set_winner_at(inx, value)
+    @winners[inx] = value.to_i
   end
 
-  def setWinner(winner)
-    @winner = winner
-  end
-
-  def getTeams
-    return @teams
-  end
-
-  def getWinners
-    return @winner
-  end
-
-  def getNumMatchups
-    return @numOfMatchups
-  end
-
-  def getNumFirstRoundTeams
-    return @numOfFirstRoundTeams
+  def reset
+    @teams = Array.new(@num_of_first_round_teams, '___')
+    @winners = Array.new(@num_of_matchups)
+    puts @winners
   end
 end

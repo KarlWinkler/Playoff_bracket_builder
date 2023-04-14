@@ -18,7 +18,7 @@ class TeamsBuilder
 
     reader = File.open(@fileName) do |team|
       team.each do |teamNames|
-        teamsList.push(A_team.new(teamNames.split(", ")))
+        teamsList.push(Team.new(teamNames.split(", ")))
       end
     end
     reader.close

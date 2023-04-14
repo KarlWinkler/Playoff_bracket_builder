@@ -1,5 +1,4 @@
 class Event
-
   def initialize(message, index, match)
     @message = message
     @index = index
@@ -7,7 +6,7 @@ class Event
   end
 
   def getMessage
-    return @message
+    @message
   end
 
   def setMessage(m)
@@ -23,7 +22,7 @@ class Event
   end
 
   def getMatch
-    return @match
+    @match
   end
 
   def setMatch(m)

@@ -1,21 +1,20 @@
 class BracketBuilder
-  def initialize(fileName)
-    @fileName = fileName #default: "nhl.bracket"
+  def initialize(file_name: 'nhl.bracket')
+    @file_name = file_name
   end
 
   # builds the bracket from the given conf file
   def build
+    bracket_template = []
 
-    bracketTemplate = []
-
-    if File.exist?(@fileName)  
-      reader = File.open(@fileName) do |teamsList|
-        teamsList.each do |team|
-          bracketTemplate.push(team.to_s.chomp)
+    if File.exist?(@file_name)
+      File.open(@file_name) do |teams_list|
+        teams_list.each do |team|
+          bracket_template.push(team.to_s.chomp)
         end
-      end 
+      end
     end
 
-    return bracketTemplate
+    bracket_template
   end
 end

@@ -1,9 +1,4 @@
-class BracketUpdater
-
-	def initialize(bracketInterface)
-		@bracket = bracketInterface
-	end
-
+module BracketUpdater
   def addTeamAt(inx, teamName)
     @bracket.setTeamAt(inx, teamName)
   end
@@ -15,5 +10,4 @@ class BracketUpdater
   def setWinner(inx, winner)
     @bracket.setWinnerAt(inx, winner)
   end
- 
 end
